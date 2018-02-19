@@ -95,6 +95,11 @@ ZLIB_VERSION          := $(ZLIB)-1.2.8
 ZLIB_SRC              := $(ZLIB_VERSION).tar.gz
 ZLIB_DOWNLOAD         := http://prdownloads.sourceforge.net/libpng/zlib-1.2.8.tar.gz?download
 
+EXPAT                  := expat
+EXPAT_VERSION          := $(EXPAT)-2.2.5
+EXPAT_SRC              := $(EXPAT_VERSION).tar.bz2
+EXPAT_DOWNLOAD         := https://github.com/libexpat/libexpat/releases/download/R_2_2_5/expat-2.2.5.tar.bz2
+
 export PORTLIBS_PATH  := $(DEVKITPRO)/portlibs
 export PATH           := $(DEVKITA64)/bin:$(PORTLIBS_PATH)/switch/bin:$(PORTLIBS_PATH)/armv8-a/bin:$(PATH)
 export ACLOCAL_FLAGS  := -I  $(DEVKITPRO)/portlibs/switch/share/aclocal -I $(DEVKITPRO)/portlibs/armv8-a/share/aclocal
@@ -129,7 +134,8 @@ export LIBS           := -lnx
         $(TREMOR) \
         $(XZ) \
         $(MIKMOD) \
-        $(ZLIB)
+        $(ZLIB) \
+	$(EXPAT)
 
 all: $(DEVKITPRO)/portlibs/armv8-a/bin/aarch64-none-elf-pkg-config $(DEVKITPRO)/portlibs/switch/bin/aarch64-none-elf-pkg-config
 	@echo "Please choose one of the following targets:"
@@ -152,9 +158,10 @@ all: $(DEVKITPRO)/portlibs/armv8-a/bin/aarch64-none-elf-pkg-config $(DEVKITPRO)/
 	@echo "  $(XZ)"
 	@echo "  $(MIKMOD)"
 	@echo "  $(ZLIB)"
+	@echo "  $(EXPAT)"
 
 
-download: $(BZIP2_SRC) $(FREETYPE_SRC) $(GIFLIB_SRC) $(JANSSON_SRC) $(LIBARCHIVE_SRC) $(LIBCONFIG_SRC) $(LIBEXIF_SRC) $(LIBJPEGTURBO_SRC) $(LIBMAD_SRC) $(LIBOGG_SRC) $(LIBPNG_SRC) $(LIBXMP_LITE_SRC) $(MBED_APACHE_SRC) $(MBED_GPL_SRC) $(TINYXML_SRC) $(TREMOR_SRC) $(XZ_SRC) $(MIKMOD_SRC) $(ZLIB_SRC)
+download: $(BZIP2_SRC) $(FREETYPE_SRC) $(GIFLIB_SRC) $(JANSSON_SRC) $(LIBARCHIVE_SRC) $(LIBCONFIG_SRC) $(LIBEXIF_SRC) $(LIBJPEGTURBO_SRC) $(LIBMAD_SRC) $(LIBOGG_SRC) $(LIBPNG_SRC) $(LIBXMP_LITE_SRC) $(MBED_APACHE_SRC) $(MBED_GPL_SRC) $(TINYXML_SRC) $(TREMOR_SRC) $(XZ_SRC) $(MIKMOD_SRC) $(ZLIB_SRC) $(EXPAT_SRC)
 
 DOWNLOAD = wget --no-check-certificate -O "$(1)" "$(2)" || curl -Lo "$(1)" "$(2)"
 
@@ -214,6 +221,9 @@ $(MIKMOD_SRC):
 
 $(ZLIB_SRC):
 	@$(call DOWNLOAD,$@,$(ZLIB_DOWNLOAD))
+
+$(EXPAT_SRC):
+	@$(call DOWNLOAD,$@,$(EXPAT_DOWNLOAD))
 
 $(BZIP2): $(BZIP2_SRC)
 	@[ -d $(BZIP2_VERSION) ] || tar -xzf $<
@@ -342,6 +352,12 @@ $(ZLIB): $(ZLIB_SRC)
 	 CHOST=aarch64-none-elf ./configure --static --prefix=$(PORTLIBS_PATH)/armv8-a
 	@$(MAKE) -C $(ZLIB_VERSION)
 
+$(EXPAT): $(EXPAT_SRC)
+	@[ -d $(EXPAT_VERSION) ] || tar -xjf $<
+	@cd $(EXPAT_VERSION) && \
+	 ./configure --prefix=$(PORTLIBS_PATH)/armv8-a --host=aarch64-none-elf --disable-shared --enable-static
+	@$(MAKE) -C $(EXPAT_VERSION)
+
 install-$(ZLIB):
 	@$(MAKE) -C $(ZLIB_VERSION) install
 
@@ -373,6 +389,7 @@ install:
 	@[ ! -d $(TREMOR_VERSION) ] || $(MAKE) -C $(TREMOR_VERSION) install
 	@[ ! -d $(MIKMOD_VERSION) ] || $(MAKE) -C $(MIKMOD_VERSION) install
 	@[ ! -d $(XZ_VERSION) ] || $(MAKE) -C $(XZ_VERSION) install
+	@[ ! -d $(EXPAT_VERSION) ] || $(MAKE) -C $(EXPAT_VERSION) install
 
 $(DEVKITPRO)/portlibs/armv8-a/bin:
 	mkdir -p $@
@@ -407,3 +424,4 @@ clean:
 	@$(RM) -r $(XZ_VERSION)
 	@$(RM) -r $(MIKMOD_VERSION)
 	@$(RM) -r $(ZLIB_VERSION)
+	@$(RM) -r $(EXPAT_VERSION)
