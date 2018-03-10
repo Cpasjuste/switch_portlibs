@@ -101,12 +101,12 @@ EXPAT_SRC              := $(EXPAT_VERSION).tar.bz2
 EXPAT_DOWNLOAD         := https://github.com/libexpat/libexpat/releases/download/R_2_2_5/expat-2.2.5.tar.bz2
 
 export PORTLIBS_PATH  := $(DEVKITPRO)/portlibs
-export PATH           := $(DEVKITA64)/bin:$(PORTLIBS_PATH)/switch/bin:$(PORTLIBS_PATH)/armv8-a/bin:$(PATH)
-export ACLOCAL_FLAGS  := -I  $(DEVKITPRO)/portlibs/switch/share/aclocal -I $(DEVKITPRO)/portlibs/armv8-a/share/aclocal
+export PATH           := $(DEVKITA64)/bin:$(PORTLIBS_PATH)/switch/bin:$(PATH)
+export ACLOCAL_FLAGS  := -I  $(DEVKITPRO)/portlibs/switch/share/aclocal
 
 export CFLAGS         := -march=armv8-a -mtp=soft -fPIE -g -Wall -O2 -ffast-math -ffunction-sections -fdata-sections
-export CPPFLAGS       := -I$(DEVKITPRO)/libnx/include -I$(PORTLIBS_PATH)/switch/include -I$(PORTLIBS_PATH)/armv8-a/include
-export LDFLAGS        := -L$(DEVKITPRO)/libnx/lib -L$(PORTLIBS_PATH)/switch/lib -L$(PORTLIBS_PATH)/armv8-a/lib
+export CPPFLAGS       := -I$(DEVKITPRO)/libnx/include -I$(PORTLIBS_PATH)/switch/include
+export LDFLAGS        := -L$(DEVKITPRO)/libnx/lib -L$(PORTLIBS_PATH)/switch/lib
 export LIBS           := -lnx
 
 .PHONY: all \
@@ -137,7 +137,7 @@ export LIBS           := -lnx
         $(ZLIB) \
 	$(EXPAT)
 
-all: $(DEVKITPRO)/portlibs/armv8-a/bin/aarch64-none-elf-pkg-config $(DEVKITPRO)/portlibs/switch/bin/aarch64-none-elf-pkg-config
+all: $(DEVKITPRO)/portlibs/switch/bin/aarch64-none-elf-pkg-config
 	@echo "Please choose one of the following targets:"
 	@echo "  $(BZIP2)"
 	@echo "  $(FREETYPE) (requires zlib to be installed)"
@@ -233,70 +233,70 @@ $(BZIP2): $(BZIP2_SRC)
 $(FREETYPE): $(FREETYPE_SRC)
 	@[ -d $(FREETYPE_VERSION) ] || tar -xjf $<
 	@cd $(FREETYPE_VERSION) && \
-	 ./configure --prefix=$(PORTLIBS_PATH)/armv8-a --host=aarch64-none-elf --disable-shared --enable-static --without-harfbuzz
+	 ./configure --prefix=$(PORTLIBS_PATH)/switch --host=aarch64-none-elf --disable-shared --enable-static --without-harfbuzz
 	@$(MAKE) -C $(FREETYPE_VERSION)
 
 $(GIFLIB): $(GIFLIB_SRC)
 	@[ -d $(GIFLIB_VERSION) ] || tar -xjf $<
 	@cd $(GIFLIB_VERSION) && \
-	 ./configure --prefix=$(PORTLIBS_PATH)/armv8-a --host=aarch64-none-elf --disable-shared --enable-static
+	 ./configure --prefix=$(PORTLIBS_PATH)/switch --host=aarch64-none-elf --disable-shared --enable-static
 	@$(MAKE) -C $(GIFLIB_VERSION)
 
 $(JANSSON): $(JANSSON_SRC)
 	@[ -d $(JANSSON_VERSION) ] || tar -xjf $<
 	@cd $(JANSSON_VERSION) && \
-	 ./configure --prefix=$(PORTLIBS_PATH)/armv8-a --host=aarch64-none-elf --disable-shared --enable-static
+	 ./configure --prefix=$(PORTLIBS_PATH)/switch --host=aarch64-none-elf --disable-shared --enable-static
 	@$(MAKE) -C $(JANSSON_VERSION)
 
 $(LIBARCHIVE): $(LIBARCHIVE_SRC)
 	@[ -d $(LIBARCHIVE_VERSION) ] || tar -xzf $<
 	@cd $(LIBARCHIVE_VERSION) && \
 	patch -Np1 -i ../libarchive-3.1.2.patch && \
-	./configure --prefix=$(PORTLIBS_PATH)/armv8-a --host=aarch64-none-elf --disable-shared --enable-static --without-nettle --without-openssl --without-xml2 --without-expat --without-iconv --disable-bsdtar --disable-bsdcpio --disable-acl
+	./configure --prefix=$(PORTLIBS_PATH)/switch --host=aarch64-none-elf --disable-shared --enable-static --without-nettle --without-openssl --without-xml2 --without-expat --without-iconv --disable-bsdtar --disable-bsdcpio --disable-acl
 	@$(MAKE) -C $(LIBARCHIVE_VERSION)
 
 $(LIBCONFIG): $(LIBCONFIG_SRC)
 	@[ -d $(LIBCONFIG_VERSION) ] || tar -xzf $<
 	@cd $(LIBCONFIG_VERSION) && \
 	 autoreconf -i && \
-	 ./configure --prefix=$(PORTLIBS_PATH)/armv8-a --host=aarch64-none-elf --disable-cxx --disable-examples
+	 ./configure --prefix=$(PORTLIBS_PATH)/switch --host=aarch64-none-elf --disable-cxx --disable-examples
 	@$(MAKE) -C $(LIBCONFIG_VERSION)/lib
 
 $(LIBEXIF): $(LIBEXIF_SRC)
 	@[ -d $(LIBEXIF_VERSION) ] || tar -xjf $<
 	@cd $(LIBEXIF_VERSION) && \
-	 ./configure --prefix=$(PORTLIBS_PATH)/armv8-a --host=aarch64-none-elf --disable-shared --enable-static
+	 ./configure --prefix=$(PORTLIBS_PATH)/switch --host=aarch64-none-elf --disable-shared --enable-static
 	@$(MAKE) -C $(LIBEXIF_VERSION)
 
 $(LIBJPEGTURBO): $(LIBJPEGTURBO_SRC)
 	@[ -d $(LIBJPEGTURBO_VERSION) ] || tar -xzf $<
 	@cd $(LIBJPEGTURBO_VERSION) && \
-	 ./configure --prefix=$(PORTLIBS_PATH)/armv8-a --host=aarch64-none-elf --disable-shared --enable-static
+	 ./configure --prefix=$(PORTLIBS_PATH)/switch --host=aarch64-none-elf --disable-shared --enable-static
 	@$(MAKE) -C $(LIBJPEGTURBO_VERSION)
 
 $(LIBMAD): $(LIBMAD_SRC)
 	@[ -d $(LIBMAD_VERSION) ] || tar -xzf $<
 	@cd $(LIBMAD_VERSION) && \
 	 patch -Np1 -i ../libmad-0.15.1b.patch && \
-	 ./configure --prefix=$(PORTLIBS_PATH)/armv8-a --host=aarch64-none-elf --disable-shared --enable-static
+	 ./configure --prefix=$(PORTLIBS_PATH)/switch --host=aarch64-none-elf --disable-shared --enable-static
 	@$(MAKE) -C $(LIBMAD_VERSION)
 
 $(LIBOGG): $(LIBOGG_SRC)
 	@[ -d $(LIBOGG_VERSION) ] || tar -xJf $<
 	@cd $(LIBOGG_VERSION) && \
-	 ./configure --prefix=$(PORTLIBS_PATH)/armv8-a --host=aarch64-none-elf --disable-shared --enable-static
+	 ./configure --prefix=$(PORTLIBS_PATH)/switch --host=aarch64-none-elf --disable-shared --enable-static
 	@$(MAKE) -C $(LIBOGG_VERSION)
 
 $(LIBPNG): $(LIBPNG_SRC)
 	@[ -d $(LIBPNG_VERSION) ] || tar -xJf $<
 	@cd $(LIBPNG_VERSION) && \
-	 ./configure --prefix=$(PORTLIBS_PATH)/armv8-a --host=aarch64-none-elf --disable-shared --enable-static
+	 ./configure --prefix=$(PORTLIBS_PATH)/switch --host=aarch64-none-elf --disable-shared --enable-static
 	@$(MAKE) -C $(LIBPNG_VERSION)
 
 $(LIBXMP_LITE): $(LIBXMP_LITE_SRC)
 	@[ -d $(LIBXMP_LITE_VERSION) ] || tar -xzf $<
 	@cd $(LIBXMP_LITE_VERSION) && \
-	 ./configure --prefix=$(PORTLIBS_PATH)/armv8-a --host=aarch64-none-elf --disable-shared --enable-static
+	 ./configure --prefix=$(PORTLIBS_PATH)/switch --host=aarch64-none-elf --disable-shared --enable-static
 	@$(MAKE) -C $(LIBXMP_LITE_VERSION)
 
 $(MBED_APACHE): $(MBED_APACHE_SRC)
@@ -307,7 +307,7 @@ $(MBED_APACHE): $(MBED_APACHE_SRC)
 	 -DCMAKE_CXX_COMPILER=$(DEVKITA64)/bin/aarch64-none-elf-g++ \
 	 -DCMAKE_INSTALL_PREFIX=$(PORTLIBS_PATH)/switch -DCMAKE_C_FLAGS="$(CFLAGS) $(CPPFLAGS)" \
 	 -DCMAKE_CXX_FLAGS="$(CFLAGS) -fno-exceptions -fno-rtti" \
-	 -DZLIB_ROOT="$(PORTLIBS_PATH)/armv8-a" \
+	 -DZLIB_ROOT="$(PORTLIBS_PATH)/switch" \
 	 -DENABLE_ZLIB_SUPPORT=TRUE -DENABLE_TESTING=FALSE -DENABLE_PROGRAMS=FALSE .
 	@$(MAKE) -C $(MBED_VERSION)-apache
 
@@ -319,44 +319,51 @@ $(MBED_GPL): $(MBED_GPL_SRC)
 	 -DCMAKE_CXX_COMPILER=$(DEVKITA64)/bin/aarch64-none-elf-g++ \
 	 -DCMAKE_INSTALL_PREFIX=$(PORTLIBS_PATH)/switch -DCMAKE_C_FLAGS="$(CFLAGS) $(CPPFLAGS)" \
 	 -DCMAKE_CXX_FLAGS="$(CFLAGS) -fno-exceptions -fno-rtti" \
-	 -DZLIB_ROOT="$(PORTLIBS_PATH)/armv8-a" \
+	 -DZLIB_ROOT="$(PORTLIBS_PATH)/switch" \
 	 -DENABLE_ZLIB_SUPPORT=TRUE -DENABLE_TESTING=FALSE -DENABLE_PROGRAMS=FALSE .
 	@$(MAKE) -C $(MBED_VERSION)-gpl
 
 # tinyxml2 uses cmake
 $(TINYXML): $(TINYXML_SRC)
 	@[ -d $(TINYXML_VERSION) ] || tar -xzf $<
-	@cd $(TINYXML_VERSION) && cmake -DCMAKE_SYSTEM_NAME=Generic -DCMAKE_C_COMPILER=$(DEVKITA64)/bin/aarch64-none-elf-gcc -DCMAKE_CXX_COMPILER=$(DEVKITA64)/bin/aarch64-none-elf-g++ -DCMAKE_INSTALL_PREFIX=$(PORTLIBS_PATH)/armv8-a -DCMAKE_C_FLAGS="$(CFLAGS)" -DCMAKE_CXX_FLAGS="$(CFLAGS) -fno-exceptions -fno-rtti" . && make
+	@cd $(TINYXML_VERSION) && cmake -DCMAKE_SYSTEM_NAME=Generic -DCMAKE_C_COMPILER=$(DEVKITA64)/bin/aarch64-none-elf-gcc -DCMAKE_CXX_COMPILER=$(DEVKITA64)/bin/aarch64-none-elf-g++ -DCMAKE_INSTALL_PREFIX=$(PORTLIBS_PATH)/switch -DCMAKE_C_FLAGS="$(CFLAGS)" -DCMAKE_CXX_FLAGS="$(CFLAGS) -fno-exceptions -fno-rtti" . && make
 
 $(TREMOR): $(TREMOR_SRC)
 	@[ -d $(TREMOR_VERSION) ] || tar -xzf $<
 	@cd $(TREMOR_VERSION) && \
-	 ./autogen.sh --prefix=$(PORTLIBS_PATH)/armv8-a --host=aarch64-none-elf --disable-shared --disable-oggtest
+	 ./autogen.sh --prefix=$(PORTLIBS_PATH)/switch --host=aarch64-none-elf --disable-shared --disable-oggtest
 	@$(MAKE) -C $(TREMOR_VERSION)
 
 $(XZ): $(XZ_SRC)
 	@[ -d $(XZ_VERSION) ] || tar -xJf $<
 	@cd $(XZ_VERSION) && \
-	 ./configure --prefix=$(PORTLIBS_PATH)/armv8-a --host=aarch64-none-elf --disable-shared --enable-static --disable-xz --enable-threads=no
+	 ./configure --prefix=$(PORTLIBS_PATH)/switch --host=aarch64-none-elf --disable-shared --enable-static --disable-xz --enable-threads=no
 	@$(MAKE) -C $(XZ_VERSION)
 
 $(MIKMOD): $(MIKMOD_SRC)
 	@[ -d $(MIKMOD_VERSION) ] || tar -xzf $<
 	@cd $(MIKMOD_VERSION) && \
-	 ./configure --prefix=$(MIKMOD_PATH)/armv8-a --host=aarch64-none-elf --disable-shared --enable-static
+	 ./configure --prefix=$(MIKMOD_PATH)/switch --host=aarch64-none-elf --disable-shared --enable-static
 	@$(MAKE) -C $(MIKMOD_VERSION)
 
 $(ZLIB): $(ZLIB_SRC)
 	@[ -d $(ZLIB_VERSION) ] || tar -xzf $<
 	@cd $(ZLIB_VERSION) && \
-	 CHOST=aarch64-none-elf ./configure --static --prefix=$(PORTLIBS_PATH)/armv8-a
+	 CHOST=aarch64-none-elf ./configure --static --prefix=$(PORTLIBS_PATH)/switch
 	@$(MAKE) -C $(ZLIB_VERSION)
 
 $(EXPAT): $(EXPAT_SRC)
 	@[ -d $(EXPAT_VERSION) ] || tar -xjf $<
 	@cd $(EXPAT_VERSION) && \
-	 ./configure --prefix=$(PORTLIBS_PATH)/armv8-a --host=aarch64-none-elf --disable-shared --enable-static
+	 ./configure --prefix=$(PORTLIBS_PATH)/switch --host=aarch64-none-elf --disable-shared --enable-static
 	@$(MAKE) -C $(EXPAT_VERSION)
+
+$(DEVKITPRO)/portlibs/switch/bin:
+	mkdir -p $@
+
+$(DEVKITPRO)/portlibs/switch/bin/switch-aarch64-none-elf-pkg-config : $(DEVKITPRO)/portlibs/switch/bin switch-aarch64-none-elf-pkg-config
+	@cp switch-aarch64-none-elf-pkg-config $(DEVKITPRO)/portlibs/switch/bin/switch-aarch64-none-elf-pkg-config
+	@cp switch-aarch64-none-elf-pkg-config $(DEVKITPRO)/portlibs/switch/bin/armv8-a-aarch64-none-elf-pkg-config
 
 install-$(ZLIB):
 	@$(MAKE) -C $(ZLIB_VERSION) install
@@ -367,12 +374,12 @@ install-$(MBED_APACHE):
 install-$(MBED_GPL):
 	@$(MAKE) -C $(MBED_VERSION)-gpl install
 
-install:
+install: $(DEVKITPRO)/portlibs/switch/bin/switch-aarch64-none-elf-pkg-config
 	@if [ -d $(BZIP2_VERSION) ]; then \
-		cp -fv $(BZIP2_VERSION)/bzlib.h $(PORTLIBS_PATH)/armv8-a/include; \
-		chmod a+r $(PORTLIBS_PATH)/armv8-a/include/bzlib.h; \
-		cp -fv $(BZIP2_VERSION)/libbz2.a $(PORTLIBS_PATH)/armv8-a/lib; \
-		chmod a+r $(PORTLIBS_PATH)/armv8-a/lib/libbz2.a; \
+		cp -fv $(BZIP2_VERSION)/bzlib.h $(PORTLIBS_PATH)/switch/include; \
+		chmod a+r $(PORTLIBS_PATH)/switch/include/bzlib.h; \
+		cp -fv $(BZIP2_VERSION)/libbz2.a $(PORTLIBS_PATH)/switch/lib; \
+		chmod a+r $(PORTLIBS_PATH)/switch/lib/libbz2.a; \
 	fi
 	@[ ! -d $(FREETYPE_VERSION) ] || $(MAKE) -C $(FREETYPE_VERSION) install
 	@[ ! -d $(GIFLIB_VERSION) ] || $(MAKE) -C $(GIFLIB_VERSION) install
@@ -390,19 +397,6 @@ install:
 	@[ ! -d $(MIKMOD_VERSION) ] || $(MAKE) -C $(MIKMOD_VERSION) install
 	@[ ! -d $(XZ_VERSION) ] || $(MAKE) -C $(XZ_VERSION) install
 	@[ ! -d $(EXPAT_VERSION) ] || $(MAKE) -C $(EXPAT_VERSION) install
-
-$(DEVKITPRO)/portlibs/armv8-a/bin:
-	mkdir -p $@
-
-$(DEVKITPRO)/portlibs/switch/bin:
-	mkdir -p $@
-
-$(DEVKITPRO)/portlibs/armv8-a/bin/aarch64-none-elf-pkg-config : $(DEVKITPRO)/portlibs/armv8-a/bin armv8-a-aarch64-none-elf-pkg-config
-	cp armv8-a-aarch64-none-elf-pkg-config $@
-
-
-$(DEVKITPRO)/portlibs/switch/bin/aarch64-none-elf-pkg-config : $(DEVKITPRO)/portlibs/switch/bin switch-aarch64-none-elf-pkg-config
-	cp switch-aarch64-none-elf-pkg-config $@
 
 clean:
 	@$(RM) -r $(BZIP2_VERSION)
